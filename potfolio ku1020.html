@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Khushal Umratkar</title>
+
+<link href="<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&display=swap" rel="stylesheet">
+
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{
+    font-family: "Playfair Display", serif;
+    background:#c8aa8dc2;
+    color:#1a1918;
+}
+@keyframes fadeUp {
+    from {
+        opacity: 0;
+        transform: translateY(40px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* NAVBAR */
+nav{
+    background:#000;
+    padding:18px 60px;
+    display:flex;
+    justify-content:flex-end;
+    align-items:center;
+    gap:40px;
+}
+nav a{
+    color:#fff;
+    text-decoration:none;
+    font-size:14px;
+}
+nav .btn{
+    background:#fff;
+    color:#000;
+    padding:10px 22px;
+    border-radius:30px;
+    font-weight:600;
+    transition:0.3s;
+}
+nav .btn:hover{
+    background:#000;
+    color:#fff;
+    box-shadow:0 0 15px rgba(255,255,255,0.6);
+}
+
+/* HERO */
+.hero{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    min-height:90vh;
+}
+
+
+.hero-left{
+    background:#f6eae3;
+    padding:100px;
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+}
+.hero-left h1{
+    font-size:3.4rem;
+    margin:10px 0;
+}
+.hero-left p{
+    margin:10px 0;
+    color:#444;
+}
+.socials{
+    margin-top:20px;
+}
+.socials img{
+    width:20px;
+    margin-right:20px;
+    transition:0.3s;
+}
+.socials img:hover{
+    transform:scale(1.2);
+}
+
+.hero-right{
+    background:#000;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+}
+.hero-right img{
+    max-height:85vh;
+}
+
+/* SECTIONS */
+.section{
+    padding:120px 10%;
+    text-align:center;
+    background:#f4f4f4;
+}
+.section h2{
+    display:inline-block;
+    padding:14px 50px;
+    border:3px solid #000;
+    border-radius:14px;
+    margin-bottom:40px;
+    letter-spacing:2px;
+}
+
+/* CARDS */
+.cards{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(250px,1fr));
+    gap:40px;
+    margin-top:60px;
+}
+.card{
+    background:#fff;
+    padding:50px 30px;
+    border-radius:20px;
+    box-shadow:0 15px 40px rgba(0,0,0,0.08);
+    transition:0.4s ease;
+}
+.card:hover{
+    transform:translateY(-10px) scale(1.02);
+    box-shadow:0 30px 60px rgba(0,0,0,0.15);
+}
+
+/* SKILLS */
+.skills-icons{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(120px,1fr));
+    gap:60px;
+    margin-top:70px;
+}
+.skills-icons div{
+    transition:0.3s ease;
+}
+.skills-icons div:hover{
+    transform:translateY(-10px) scale(1.05);
+}
+.skills-icons img{
+    width:70px;
+}
+.skills-icons span{
+    display:block;
+    margin-top:10px;
+    font-weight:600;
+}
+
+/* CONTACT */
+.contact input,.contact textarea{
+    width:100%;
+    border:none;
+    border-bottom:2px solid #000;
+    background:none;
+    padding:14px;
+    margin-bottom:40px;
+    font-size:16px;
+}
+
+/* FOOTER */
+footer{
+    background:#000;
+    color:#fff;
+    padding:60px;
+    text-align:center;
+}
+</style>
+</head>
+
+<body>
+
+<nav>
+    <a href="#about">About Me</a>
+    <a href="#skills">Skills</a>
+    <a href="#projects">Portfolio</a>
+    <a class="btn" href="#contact">Contact Me</a>
+</nav>
+
+<div class="hero">
+    <div class="hero-left">
+        <p>Hi, I am</p>
+        <h1>Khushal Umratkar</h1>
+        <p>B.Tech Student | Tech & Startup Enthusiast</p>
+        <p>Building digital products, startups, and real-world solutions.</p>
+
+        <div class="socials">
+            <a href="mailto:khushalpumratkar1@gmail.com">
+                <img src="https://cdn-icons-png.flaticon.com/512/561/561127.png">
+            </a>
+            <a href="https://www.linkedin.com/in/khushal-umratkar-031394296">
+                <img src="https://cdn-icons-png.flaticon.com/512/174/174857.png">
+            </a>
+            <a href="https://github.com/khushal1020">
+                <img src="https://cdn-icons-png.flaticon.com/512/733/733553.png">
+            </a>
+        </div>
+    </div>
+
+    <div class="hero-right">
+        <img src="profile.jpeg">
+    </div>
+</div>
+
+<div id="about" class="section">
+    <h2>ABOUT ME</h2>
+    <p>
+    I am a first-year B.Tech student at Symbiosis, Nagpur, passionate about technology, startups and entrepreneurship.  
+    My goal is to build scalable digital products instead of following a traditional job path.
+    </p>
+
+    <div class="cards">
+        <div class="card">Design & UI</div>
+        <div class="card">Development</div>
+        <div class="card">Startup & Business</div>
+    </div>
+</div>
+
+<div id="skills" class="section">
+    <h2>SKILLS</h2>
+    <p style="letter-spacing:2px;">USING NOW:</p>
+
+    <div class="skills-icons">
+        <div><img src="https://cdn-icons-png.flaticon.com/512/919/919851.png"><span>C Programming</span></div>
+        <div><img src="https://cdn-icons-png.flaticon.com/512/732/732212.png"><span>HTML5</span></div>
+        <div><img src="https://cdn-icons-png.flaticon.com/512/732/732190.png"><span>CSS3</span></div>
+        <div><img src="https://cdn-icons-png.flaticon.com/512/4248/4248443.png"><span>SQL</span></div>
+        <div><img src="https://cdn-icons-png.flaticon.com/512/5968/5968705.png"><span>Figma</span></div>
+    </div>
+</div>
+
+<div id="projects" class="section">
+    <h2>PORTFOLIO</h2>
+    <div class="cards">
+        <div class="card">AI Skill-Upgrading App</div>
+        <div class="card">Programming Projects</div>
+        <div class="card">Stock Market Analysis</div>
+    </div>
+</div>
+
+<div id="contact" class="section contact">
+    <h2>CONTACT</h2>
+    <input placeholder="Your Name">
+    <input placeholder="Your Email">
+    <textarea placeholder="Your Message"></textarea>
+</div>
+
+<footer>
+© 2026 Khushal Umratkar
+</footer>
+
+</body>
+</html>
