@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>ENTHUSIA 5.0 2026 Registration</title>
+
+<style>
+    body {
+        margin: 0;
+        padding: 0;
+        font-family: Arial, sans-serif;
+        background:
+        linear-gradient(rgba(0,0,0,0.75), rgba(0,0,0,0.75)),
+        url("https://image-static.collegedunia.com/public/reviewPhotos/1100142/IMG_3297.jpeg");
+        background-size: cover;
+        background-position: center;
+        min-height: 100vh;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .form-container {
+        background-color: rgba(5, 15, 35, 0.97);
+        width: 600px;
+        padding: 35px;
+        border-radius: 14px;
+        box-shadow: 0 0 30px #6da9c7;
+        color: white;
+    }
+
+    /* CENTERED HEADER */
+    .header {
+        text-align: center;
+        margin-bottom: 25px;
+        border-bottom: 1px solid #00aaff;
+        padding-bottom: 20px;
+    }
+
+    .header img {
+        width: 80px;
+        height: 80px;
+        object-fit: contain;
+        background-color: white;
+        border-radius: 10px;
+        padding: 6px;
+        margin-bottom: 10px;
+    }
+
+    .header h1 {
+        margin: 0;
+        color: #00aaff;
+        font-size: 28px;
+    }
+
+    .header p {
+        margin-top: 5px;
+        font-size: 15px;
+        color: #cccccc;
+    }
+
+    label {
+        display: block;
+        margin-top: 14px;
+        font-size: 16px;
+        font-weight: bold;
+    }
+
+    input, select, textarea {
+        width: 100%;
+        padding: 12px;
+        margin-top: 6px;
+        border-radius: 8px;
+        border: none;
+        outline: none;
+        background-color: #0f172a;
+        color: white;
+        font-size: 15px;
+    }
+
+    input::placeholder, textarea::placeholder {
+        color: #aaaaaa;
+    }
+
+    textarea {
+        resize: none;
+    }
+
+    .radio-group {
+        margin-top: 8px;
+        font-size: 15px;
+    }
+
+    .radio-group input {
+        width: auto;
+        margin-right: 6px;
+    }
+
+    button {
+        width: 100%;
+        margin-top: 25px;
+        padding: 14px;
+        background: linear-gradient(to right, #007bff, #00c6ff);
+        border: none;
+        border-radius: 10px;
+        font-size: 18px;
+        color: black;
+        font-weight: bold;
+        cursor: pointer;
+        transition: 0.3s;
+    }
+
+    button:hover {
+        box-shadow: 0 0 20px #00aaff;
+        transform: scale(1.02);
+    }
+
+    .footer-text {
+        text-align: center;
+        font-size: 13px;
+        margin-top: 18px;
+        color: #bbbbbb;
+    }
+</style>
+</head>
+
+<body>
+
+<div class="form-container">
+
+    <!-- CENTERED HEADER -->
+    <div class="header">
+        <img src="C:\Users\Asus\Downloads\logo.jpeg" alt="College Logo">
+        <h1>Symbiosis Institute of Technology</h1>
+        <p>Nagpur | ENTHUSIA 5.0 2026 Registration</p>
+    </div>
+
+    <!-- FORM -->
+    <form>
+        <label>Full Name</label>
+        <input type="text" placeholder="Enter your full name" required>
+
+        <label>Email Address</label>
+        <input type="email" placeholder="example@gmail.com" required>
+
+        <label>Mobile Number</label>
+        <input type="tel" placeholder="10-digit mobile number" required>
+
+        <label>College Name</label>
+        <input type="text" value="Name Of Institution" readonly>
+
+        <label>Department</label>
+        <input type="text" placeholder="CSE / IT / ECE / MECH etc." required>
+
+        <label>Year of Study</label>
+        <select required>
+            <option value="">-- Select Year --</option>
+            <option>1st Year</option>
+            <option>2nd Year</option>
+            <option>3rd Year</option>
+            <option>4th Year</option>
+        </select>
+
+        <label>Event Interested In</label>
+        <select required>
+            <option value="">-- Select Event --</option>
+            <option>SITNOVATE-Hackathon</option>
+            <option>Code War</option>
+            <option>Robotics</option>
+            <option>Web Development</option>
+            <option>AI & ML (Web Seminar)</option>
+        </select>
+
+        <label>Participation Type</label>
+        <div class="radio-group">
+            <input type="radio" name="type"> Solo
+            <input type="radio" name="type"> Team
+        </div>
+
+        <label>Why do you want to participate?</label>
+        <textarea rows="3" placeholder="EVENT NAME : "></textarea>
+
+        <button type="submit">Register Now</button>
+    </form>
+
+    <div class="footer-text">
+        © 2026 Symbiosis Institute of Technology, Nagpur
+    </div>
+
+</div>
+
+</body>
+</html>
