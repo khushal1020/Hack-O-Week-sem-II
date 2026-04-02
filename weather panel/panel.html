@@ -1,0 +1,601 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Weather Dashboard</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<style data-purpose="custom-styles">@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap");
+body {
+    font-family: "Inter", sans-serif;
+    background: linear-gradient(to bottom right, #1e3a8a, #f97316, #a855f7);
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+    color: #1f2937;
+    transition: background-image 1.5s ease;
+}
+.glass-panel {
+    background: rgba(255, 255, 255, 0.4);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.5);
+    border-radius: 16px;
+}
+.glass-card {
+    background: rgba(255, 255, 255, 0.2);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    border-radius: 12px;
+}
+.search-input::placeholder {
+    color: #4b5563;
+}
+::-webkit-scrollbar {
+    width: 6px;
+}
+::-webkit-scrollbar-track {
+    background: transparent;
+}
+::-webkit-scrollbar-thumb {
+    background: rgba(0, 0, 0, 0.2);
+    border-radius: 3px;
+}</style>
+</head>
+<body class="min-h-screen text-gray-800 antialiased p-6 flex flex-col items-center">
+<div class="max-w-[1200px] w-full flex flex-col gap-6">
+<!-- BEGIN: Top Navigation -->
+<header class="flex justify-between items-center w-full pb-4">
+<!-- Logo -->
+<div class="flex items-center gap-2 text-white font-bold text-xl">
+<svg class="text-white" fill="none" height="24" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg"><circle cx="12" cy="12" r="4"></circle><path d="M12 2v2"></path><path d="M12 20v2"></path><path d="m4.93 4.93 1.41 1.41"></path><path d="m17.66 17.66 1.41 1.41"></path><path d="M2 12h2"></path><path d="M20 12h2"></path><path d="m6.34 17.66-1.41 1.41"></path><path d="m19.07 4.93-1.41 1.41"></path></svg>
+        AccuWeather
+      </div>
+<!-- Search Bar -->
+<div class="flex-1 max-w-lg mx-6 relative">
+<div class="glass-card flex items-center px-4 py-2 relative">
+<svg id="search-btn" class="text-gray-600 mr-2 cursor-pointer hover:text-gray-900 transition-colors" fill="none" height="20" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24" width="20" xmlns="http://www.w3.org/2000/svg"><circle cx="11" cy="11" r="8"></circle><path d="m21 21-4.3-4.3"></path></svg>
+<input class="search-input w-full bg-transparent border-none outline-none text-gray-800 placeholder-gray-600 focus:ring-0 p-0 text-sm" placeholder="Search your Address, City or Zip Code" type="text"/>
+</div>
+<div id="search-error" class="absolute top-full left-0 mt-2 ml-4 text-red-100 bg-red-500/80 px-3 py-1 rounded shadow-lg text-xs font-semibold hidden backdrop-blur-md border border-red-500/20 z-50 transition-opacity">City not found. Please try again.</div>
+</div>
+<!-- Actions -->
+<div class="flex items-center gap-6 text-sm font-medium text-gray-900">
+<button class="flex items-center gap-1 hover:text-white transition-colors">
+<svg fill="none" height="16" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24" width="16" xmlns="http://www.w3.org/2000/svg"><circle cx="12" cy="12" r="10"></circle><path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"></path><path d="M2 12h20"></path></svg>
+          Auto-detect
+        </button>
+<div class="relative">
+<button id="recent-btn" class="flex items-center gap-1 hover:text-white transition-colors">
+          Recent locations
+          <svg fill="none" height="16" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24" width="16" xmlns="http://www.w3.org/2000/svg"><path d="m6 9 6 6 6-6"></path></svg>
+</button>
+<div id="recent-dropdown" class="absolute top-full right-0 mt-2 w-48 bg-white/80 backdrop-blur-md rounded-lg shadow-xl overflow-hidden hidden z-50 border border-white/40">
+   <ul id="recent-list" class="flex flex-col text-sm text-gray-900"></ul>
+</div>
+</div>
+</div>
+</header>
+<!-- END: Top Navigation -->
+<!-- BEGIN: Main Dashboard Layout -->
+<main id="main-content" class="grid grid-cols-3 gap-6 w-full h-full transition-opacity duration-500">
+<!-- BEGIN: Left Column (Weather Content) -->
+<div class="col-span-2 flex flex-col gap-6">
+<!-- BEGIN: Current Weather Large Card -->
+<section class="rounded-2xl p-6 flex justify-between relative overflow-hidden h-[280px] bg-gradient-to-br from-teal-100/90 via-blue-200/80 to-orange-300/80 shadow-lg border border-white/40" data-purpose="current-weather">
+<div class="flex flex-col justify-between relative z-10 w-1/2">
+<div>
+<p class="text-sm font-medium text-gray-800">Current Weather</p>
+<h1 class="text-3xl font-bold mt-1 text-gray-900">Chandigarh, India</h1>
+<p class="text-sm text-gray-800 mt-1">10:30 AM</p>
+</div>
+<div class="mt-4">
+<div class="text-[6rem] font-bold leading-none tracking-tighter text-white">22°C</div>
+<p class="text-lg text-gray-800 mt-2 font-medium">RealFeel 20°</p>
+</div>
+</div>
+<div class="relative z-10 w-1/2 flex items-center justify-end pr-8">
+<div class="w-48 h-48 rounded-lg bg-white/20 shadow-inner flex items-center justify-center"><svg class="w-24 h-24 text-white/50" fill="none" stroke="currentColor" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M3 15a4 4 0 004 4h9a5 5 0 10-.1-9.999 5.002 5.002 0 10-9.78 2.096A4.001 4.001 0 003 15z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg></div>
+</div>
+</section>
+<!-- END: Current Weather Large Card -->
+<!-- BEGIN: Weather Details Grid -->
+<section data-purpose="weather-details">
+<h2 class="text-white font-medium mb-3 pl-1">Weather Details</h2>
+<div class="grid grid-cols-3 gap-4">
+<!-- Humidity -->
+<div class="glass-card p-4 flex items-center gap-4">
+<svg class="text-blue-500 flex-shrink-0" fill="none" height="24" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg"><path d="M12 22a7 7 0 0 0 7-7c0-2-1-3.9-3-5.5s-3.5-4-4-6.5c-.5 2.5-2 4.9-4 6.5C6 11.1 5 13 5 15a7 7 0 0 0 7 7z"></path></svg>
+<div class="flex flex-col">
+<p class="text-xs text-gray-800 font-medium leading-tight">Humidity</p>
+<p class="text-lg font-semibold text-gray-900 leading-tight mt-0.5">85%</p>
+</div>
+</div>
+<!-- Wind -->
+<div class="glass-card p-4 flex items-center gap-4">
+<svg class="text-teal-600 flex-shrink-0" fill="none" height="24" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg"><path d="M12.8 19.6A2 2 0 1 0 14 16H2"></path><path d="M17.5 8a2.5 2.5 0 1 1 2 4H2"></path><path d="M9.8 4.4A2 2 0 1 1 11 8H2"></path></svg>
+<div class="flex flex-col">
+<p class="text-xs text-gray-800 font-medium leading-tight">Wind</p>
+<p class="text-lg font-semibold text-gray-900 leading-tight mt-0.5">15 km/h N</p>
+</div>
+</div>
+<!-- UV Index -->
+<div class="glass-card p-4 flex items-center gap-4">
+<svg class="text-orange-500 flex-shrink-0" fill="none" height="24" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg"><circle cx="12" cy="12" r="4"></circle><path d="M12 2v2"></path><path d="M12 20v2"></path><path d="m4.93 4.93 1.41 1.41"></path><path d="m17.66 17.66 1.41 1.41"></path><path d="M2 12h2"></path><path d="M20 12h2"></path><path d="m6.34 17.66-1.41 1.41"></path><path d="m19.07 4.93-1.41 1.41"></path></svg>
+<div class="flex flex-col">
+<p class="text-xs text-gray-800 font-medium leading-tight">UV Index</p>
+<p class="text-lg font-semibold text-gray-900 leading-tight mt-0.5">7 (High)</p>
+</div>
+</div>
+<!-- Pressure -->
+<div class="glass-card p-4 flex items-center gap-4">
+<svg class="text-indigo-500 flex-shrink-0" fill="none" height="24" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg"><circle cx="12" cy="12" r="10"></circle><path d="m16 10-4 4-4-4"></path></svg>
+<div class="flex flex-col">
+<p class="text-xs text-gray-800 font-medium leading-tight">Pressure</p>
+<p class="text-lg font-semibold text-gray-900 leading-tight mt-0.5">1012 mb</p>
+</div>
+</div>
+<!-- Visibility -->
+<div class="glass-card p-4 flex items-center gap-4">
+<svg class="text-gray-600 flex-shrink-0" fill="none" height="24" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"></path><circle cx="12" cy="12" r="3"></circle></svg>
+<div class="flex flex-col">
+<p class="text-xs text-gray-800 font-medium leading-tight">Visibility</p>
+<p class="text-lg font-semibold text-gray-900 leading-tight mt-0.5">10 km</p>
+</div>
+</div>
+<!-- Dew Point -->
+<div class="glass-card p-4 flex items-center gap-4">
+<svg class="text-emerald-500 flex-shrink-0" fill="none" height="24" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg"><path d="M14 4v10.54a4 4 0 1 1-4 0V4a2 2 0 0 1 4 0Z"></path></svg>
+<div class="flex flex-col">
+<p class="text-xs text-gray-800 font-medium leading-tight">Dew Point</p>
+<p class="text-lg font-semibold text-gray-900 leading-tight mt-0.5">18°C</p>
+</div>
+</div>
+</div>
+</section>
+<!-- END: Weather Details Grid -->
+<!-- BEGIN: Hourly Forecast Line Chart -->
+<section class="glass-panel p-5 mt-auto" data-purpose="hourly-forecast">
+<div class="flex justify-between items-center mb-6">
+<h2 class="text-gray-900 font-semibold text-lg">Hourly Forecast</h2>
+<button class="text-gray-600 hover:text-gray-900">
+<svg fill="none" height="20" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24" width="20" xmlns="http://www.w3.org/2000/svg"><path d="m9 18 6-6-6-6"></path></svg>
+</button>
+</div>
+<div class="relative w-full h-[140px]">
+<svg class="w-full h-[80px] overflow-visible mt-6" preserveaspectratio="none" viewbox="0 0 100 100">
+<path d="M 5,60 C 15,65 25,60 35,50 C 45,40 55,30 65,35 C 75,40 85,45 95,50" fill="none" stroke="url(#lineGradient)" stroke-width="2"></path>
+<circle cx="5" cy="60" fill="white" r="2"></circle>
+<circle cx="15" cy="63" fill="white" r="2"></circle>
+<circle cx="25" cy="58" fill="white" r="2"></circle>
+<circle cx="35" cy="48" fill="white" r="2"></circle>
+<circle cx="45" cy="38" fill="white" r="2"></circle>
+<circle cx="55" cy="32" fill="white" r="2"></circle>
+<circle cx="65" cy="36" fill="white" r="2"></circle>
+<circle cx="75" cy="42" fill="white" r="2"></circle>
+<circle cx="85" cy="46" fill="white" r="2"></circle>
+<circle cx="95" cy="50" fill="white" r="2"></circle>
+<defs>
+<lineargradient id="lineGradient" x1="0" x2="100%" y1="0" y2="0">
+<stop offset="0%" stop-color="#3b82f6"></stop>
+<stop offset="50%" stop-color="#10b981"></stop>
+<stop offset="100%" stop-color="#f59e0b"></stop>
+</lineargradient>
+</defs>
+</svg>
+<!-- Labels Top (Temperatures) -->
+<div class="absolute inset-x-0 top-0 flex justify-between text-xs font-semibold text-gray-900 px-2">
+<span>15°</span><span>17°</span><span>17°</span><span>18°</span><span>19°</span><span>20°</span><span>20°</span><span>22°</span><span>23°</span><span>18°</span>
+</div>
+<!-- Labels Bottom (Icons & Times) -->
+<div class="absolute inset-x-0 bottom-0 flex justify-between text-xs text-gray-800 px-1 items-end">
+<div class="flex flex-col items-center gap-1"><svg class="text-blue-500" fill="currentColor" height="16" viewbox="0 0 20 20" width="16"><path clip-rule="evenodd" d="M5.5 16a3.5 3.5 0 01-.369-6.98 4 4 0 117.759-1.549V8a3.5 3.5 0 11-7.39 1.549V16z" fill-rule="evenodd"></path></svg>Now</div>
+<div class="flex flex-col items-center gap-1"><svg class="text-blue-500" fill="currentColor" height="16" viewbox="0 0 20 20" width="16"><path clip-rule="evenodd" d="M5.5 16a3.5 3.5 0 01-.369-6.98 4 4 0 117.759-1.549V8a3.5 3.5 0 11-7.39 1.549V16z" fill-rule="evenodd"></path></svg>11 AM</div>
+<div class="flex flex-col items-center gap-1"><svg class="text-blue-500" fill="currentColor" height="16" viewbox="0 0 20 20" width="16"><path clip-rule="evenodd" d="M5.5 16a3.5 3.5 0 01-.369-6.98 4 4 0 117.759-1.549V8a3.5 3.5 0 11-7.39 1.549V16z" fill-rule="evenodd"></path></svg>12 PM</div>
+<div class="flex flex-col items-center gap-1"><svg class="text-blue-500" fill="currentColor" height="16" viewbox="0 0 20 20" width="16"><path clip-rule="evenodd" d="M5.5 16a3.5 3.5 0 01-.369-6.98 4 4 0 117.759-1.549V8a3.5 3.5 0 11-7.39 1.549V16z" fill-rule="evenodd"></path></svg>3 PM</div>
+<div class="flex flex-col items-center gap-1"><svg class="text-blue-500" fill="currentColor" height="16" viewbox="0 0 20 20" width="16"><path clip-rule="evenodd" d="M5.5 16a3.5 3.5 0 01-.369-6.98 4 4 0 117.759-1.549V8a3.5 3.5 0 11-7.39 1.549V16z" fill-rule="evenodd"></path></svg>4 PM</div>
+<div class="flex flex-col items-center gap-1"><svg class="text-blue-500" fill="currentColor" height="16" viewbox="0 0 20 20" width="16"><path clip-rule="evenodd" d="M5.5 16a3.5 3.5 0 01-.369-6.98 4 4 0 117.759-1.549V8a3.5 3.5 0 11-7.39 1.549V16z" fill-rule="evenodd"></path></svg>5 PM</div>
+<div class="flex flex-col items-center gap-1"><svg class="text-blue-500" fill="currentColor" height="16" viewbox="0 0 20 20" width="16"><path clip-rule="evenodd" d="M5.5 16a3.5 3.5 0 01-.369-6.98 4 4 0 117.759-1.549V8a3.5 3.5 0 11-7.39 1.549V16z" fill-rule="evenodd"></path></svg>6 PM</div>
+<div class="flex flex-col items-center gap-1"><svg class="text-orange-400" fill="currentColor" height="16" viewbox="0 0 20 20" width="16"><path clip-rule="evenodd" d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 000 2h1z" fill-rule="evenodd"></path></svg>7 PM</div>
+<div class="flex flex-col items-center gap-1"><svg class="text-orange-400" fill="currentColor" height="16" viewbox="0 0 20 20" width="16"><path clip-rule="evenodd" d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 000 2h1z" fill-rule="evenodd"></path></svg>8 PM</div>
+<div class="flex flex-col items-center gap-1"><svg class="text-blue-500" fill="currentColor" height="16" viewbox="0 0 20 20" width="16"><path clip-rule="evenodd" d="M5.5 16a3.5 3.5 0 01-.369-6.98 4 4 0 117.759-1.549V8a3.5 3.5 0 11-7.39 1.549V16z" fill-rule="evenodd"></path></svg>9 PM</div>
+</div>
+</div>
+</section>
+<!-- END: Hourly Forecast Line Chart -->
+</div>
+<!-- END: Left Column (Weather Content) -->
+<!-- BEGIN: Right Column (Sidebar) -->
+<aside class="flex flex-col gap-6">
+<!-- BEGIN: Top Stories Sidebar Card -->
+<section class="glass-panel p-5 flex flex-col flex-1" data-purpose="top-stories">
+<h2 class="font-semibold mb-4 text-lg text-white">Top Stories</h2>
+<div class="flex flex-col gap-4 overflow-y-auto pr-1">
+<!-- Story 1 -->
+<div class="flex gap-4 items-start border-b border-gray-300/40 pb-4 last:border-0 last:pb-0">
+<div class="w-[72px] h-[52px] rounded-md bg-white/20 flex-shrink-0 flex items-center justify-center"><svg class="w-6 h-6 text-white/50" fill="none" stroke="currentColor" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg></div>
+<div class="flex flex-col justify-center">
+<h3 class="text-sm font-medium text-gray-900 leading-snug line-clamp-2">Second kona storm brings floods to Hawaii</h3>
+<p class="text-xs text-gray-700 mt-1.5">10 day ago</p>
+</div>
+</div>
+<!-- Story 2 -->
+<div class="flex gap-4 items-start border-b border-gray-300/40 pb-4 last:border-0 last:pb-0">
+<div class="w-[72px] h-[52px] rounded-md bg-white/20 flex-shrink-0 flex items-center justify-center"><svg class="w-6 h-6 text-white/50" fill="none" stroke="currentColor" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg></div>
+<div class="flex flex-col justify-center">
+<h3 class="text-sm font-medium text-gray-900 leading-snug line-clamp-2">When will DC cherry blossoms reach peak bloom?</h3>
+<p class="text-xs text-gray-700 mt-1.5">17 day ago</p>
+</div>
+</div>
+<!-- Story 3 -->
+<div class="flex gap-4 items-start border-b border-gray-300/40 pb-4 last:border-0 last:pb-0">
+<div class="w-[72px] h-[52px] rounded-md bg-white/20 flex-shrink-0 flex items-center justify-center"><svg class="w-6 h-6 text-white/50" fill="none" stroke="currentColor" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg></div>
+<div class="flex flex-col justify-center">
+<h3 class="text-sm font-medium text-gray-900 leading-snug line-clamp-2">Miiakozo Srondaira storm floods hews patchs</h3>
+<p class="text-xs text-gray-700 mt-1.5">17 day ago</p>
+</div>
+</div>
+<!-- Story 4 -->
+<div class="flex gap-4 items-start">
+<div class="w-[72px] h-[52px] rounded-md bg-white/20 flex-shrink-0 flex items-center justify-center"><svg class="w-6 h-6 text-white/50" fill="none" stroke="currentColor" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg></div>
+<div class="flex flex-col justify-center">
+<h3 class="text-sm font-medium text-gray-900 leading-snug line-clamp-2">What wille ifianes tomachops down -nt York ylan?</h3>
+<p class="text-xs text-gray-700 mt-1.5">17 day ago</p>
+</div>
+</div>
+</div>
+</section>
+<!-- END: Top Stories Sidebar Card -->
+<!-- BEGIN: 7-Day Forecast Sidebar Card -->
+<section class="glass-panel p-5 flex flex-col flex-1" data-purpose="7-day-forecast">
+<h2 class="text-white font-medium mb-4 text-lg">7-Day Forecast</h2>
+<div class="flex flex-col gap-2.5">
+<!-- Day 1 -->
+<div class="glass-card px-4 py-3 flex items-center justify-between">
+<div class="flex items-center gap-4 w-1/3">
+<svg class="text-gray-200" fill="currentColor" height="20" viewbox="0 0 20 20" width="20"><path clip-rule="evenodd" d="M5.5 16a3.5 3.5 0 01-.369-6.98 4 4 0 117.759-1.549V8a3.5 3.5 0 11-7.39 1.549V16z" fill-rule="evenodd"></path></svg>
+<span class="font-semibold text-gray-900">22°</span>
+</div>
+<div class="text-sm text-gray-800 w-1/3 text-center">H 10°</div>
+<div class="text-sm font-medium text-gray-900 w-1/3 text-right">Mon</div>
+</div>
+<!-- Day 2 -->
+<div class="glass-card px-4 py-3 flex items-center justify-between">
+<div class="flex items-center gap-4 w-1/3">
+<svg class="text-orange-300" fill="currentColor" height="20" viewbox="0 0 20 20" width="20"><path clip-rule="evenodd" d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 000 2h1z" fill-rule="evenodd"></path></svg>
+<span class="font-semibold text-gray-900">22°</span>
+</div>
+<div class="text-sm text-gray-800 w-1/3 text-center">H 13°</div>
+<div class="text-sm font-medium text-gray-900 w-1/3 text-right">Tue</div>
+</div>
+<!-- Day 3 -->
+<div class="glass-card px-4 py-3 flex items-center justify-between">
+<div class="flex items-center gap-4 w-1/3">
+<svg class="text-orange-400" fill="currentColor" height="20" viewbox="0 0 20 20" width="20"><path clip-rule="evenodd" d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 000 2h1z" fill-rule="evenodd"></path></svg>
+<span class="font-semibold text-gray-900">21°</span>
+</div>
+<div class="text-sm text-gray-800 w-1/3 text-center">H 10°</div>
+<div class="text-sm font-medium text-gray-900 w-1/3 text-right">Wed</div>
+</div>
+<!-- Day 4 -->
+<div class="glass-card px-4 py-3 flex items-center justify-between">
+<div class="flex items-center gap-4 w-1/3">
+<svg class="text-gray-300" fill="currentColor" height="20" viewbox="0 0 20 20" width="20"><path clip-rule="evenodd" d="M5.5 16a3.5 3.5 0 01-.369-6.98 4 4 0 117.759-1.549V8a3.5 3.5 0 11-7.39 1.549V16z" fill-rule="evenodd"></path></svg>
+<span class="font-semibold text-gray-900">19°</span>
+</div>
+<div class="text-sm text-gray-800 w-1/3 text-center">H 14°</div>
+<div class="text-sm font-medium text-gray-900 w-1/3 text-right">Thu</div>
+</div>
+<!-- Day 5 -->
+<div class="glass-card px-4 py-3 flex items-center justify-between">
+<div class="flex items-center gap-4 w-1/3">
+<svg class="text-orange-400" fill="currentColor" height="20" viewbox="0 0 20 20" width="20"><path clip-rule="evenodd" d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 000 2h1z" fill-rule="evenodd"></path></svg>
+<span class="font-semibold text-gray-900">18°</span>
+</div>
+<div class="text-sm text-gray-800 w-1/3 text-center">H 10°</div>
+<div class="text-sm font-medium text-gray-900 w-1/3 text-right">Fri</div>
+</div>
+</div>
+</section>
+<!-- END: 7-Day Forecast Sidebar Card -->
+</aside>
+<!-- END: Right Column (Sidebar) -->
+</main>
+<!-- END: Main Dashboard Layout -->
+</div>
+<script type="module">
+import { fetchFullWeatherByCity, initLocalWeather, debounce } from './weatherApi.js';
+
+// ---- WMO to Icon Parser mapping OpenWeather to original UI ----
+const wmoToIcon = (code) => {
+    // OpenWeather Codes mapping
+    if (code >= 200 && code < 600) return '<svg class="text-blue-500" fill="currentColor" height="24" viewBox="0 0 20 20" width="24"><path fill-rule="evenodd" d="M3 15a4 4 0 004 4h9a5 5 0 10-.1-9.999 5.002 5.002 0 10-9.78 2.096A4.001 4.001 0 003 15z" clip-rule="evenodd"></path></svg>'; // Rain/Storm
+    if (code >= 600 && code < 700) return '<svg class="text-gray-200" fill="currentColor" height="24" viewBox="0 0 20 20" width="24"><path fill-rule="evenodd" d="M3 15a4 4 0 004 4h9a5 5 0 10-.1-9.999 5.002 5.002 0 10-9.78 2.096A4.001 4.001 0 003 15z" clip-rule="evenodd"></path></svg>'; // Snow
+    if (code === 800) return '<svg class="text-yellow-400" fill="currentColor" height="24" viewBox="0 0 20 20" width="24"><path fill-rule="evenodd" d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 000 2h1z" clip-rule="evenodd"></path></svg>'; // Clear
+    return '<svg class="text-gray-300" fill="currentColor" height="24" viewBox="0 0 20 20" width="24"><path fill-rule="evenodd" d="M5.5 16a3.5 3.5 0 01-.369-6.98 4 4 0 117.759-1.549V8a3.5 3.5 0 11-7.39 1.549V16z" clip-rule="evenodd"></path></svg>'; // Cloud
+};
+
+function getWindDirection(deg) {
+    if (deg === undefined) return '';
+    const directions = ['N', 'NE', 'E', 'SE', 'S', 'SW', 'W', 'NW'];
+    return directions[Math.round(deg / 45) % 8];
+}
+
+// ---- Application State handling ----
+let recentLocations = JSON.parse(localStorage.getItem('recentLocations')) || [];
+
+function saveRecentLocation(name) {
+    if(!name) return;
+    recentLocations = [name, ...recentLocations.filter(loc => loc.toLowerCase() !== name.toLowerCase())].slice(0, 5);
+    localStorage.setItem('recentLocations', JSON.stringify(recentLocations));
+    renderRecentLocations();
+}
+
+function renderRecentLocations() {
+    const list = document.getElementById('recent-list');
+    if (!list) return;
+    list.innerHTML = '';
+    recentLocations.forEach(loc => {
+        const li = document.createElement('li');
+        li.className = 'px-4 py-2 hover:bg-gray-100 cursor-pointer border-b border-gray-200 last:border-0 truncate';
+        li.innerText = loc;
+        li.addEventListener('click', () => {
+             document.getElementById('recent-dropdown').classList.add('hidden');
+             executeSearch(loc);
+        });
+        list.appendChild(li);
+    });
+}
+
+function setDynamicBackground(data) {
+    const isNight = data.current.dt < data.current.sunrise || data.current.dt > data.current.sunset;
+    const code = data.current.weatherCode;
+    let gradient = 'linear-gradient(to bottom right, #1e3a8a, #f97316, #a855f7)';
+    
+    if (isNight) {
+        gradient = 'linear-gradient(to bottom right, #0f172a, #1e1b4b, #000000)';
+    } else {
+        if (code >= 200 && code <= 531) {
+            gradient = 'linear-gradient(to bottom right, #1e3a8a, #3b82f6, #0f172a)'; // Rain
+        } else if (code >= 801 && code <= 804) {
+            gradient = 'linear-gradient(to bottom right, #6b7280, #9ca3af, #d1d5db)'; // Clouds
+        } else if (code === 800) {
+            gradient = 'linear-gradient(to bottom right, #fbbf24, #f59e0b, #ef4444)'; // Clear Warm
+        } else {
+            gradient = 'linear-gradient(to bottom right, #9ca3af, #d1d5db, #f3f4f6)'; // Misc Default
+        }
+    }
+    document.body.style.backgroundImage = gradient;
+}
+
+// UI Setup Toggles
+const searchInput = document.querySelector('.search-input');
+const searchBtn = document.getElementById('search-btn');
+
+function toggleLoading(isLoading) {
+    const mainArea = document.getElementById('main-content');
+    if (mainArea) mainArea.classList.toggle('opacity-50', isLoading);
+    if (mainArea) mainArea.classList.toggle('pointer-events-none', isLoading);
+    if (searchInput) searchInput.disabled = isLoading;
+    if (searchBtn) {
+        if (isLoading) {
+            searchBtn.classList.add('animate-spin', 'text-gray-900');
+        } else {
+            searchBtn.classList.remove('animate-spin', 'text-gray-900');
+        }
+    }
+}
+
+// ---- UI Rendering Pipelines ----
+
+function renderHourly(hourlyData) {
+    const container = document.querySelector('[data-purpose="hourly-forecast"]');
+    if(!container) return;
+    
+    const temps = hourlyData.map(d => d.temp);
+    const maxT = Math.max(...temps);
+    const minT = Math.min(...temps);
+    const range = maxT - minT || 1;
+    
+    const xVals = [5, 15, 25, 35, 45, 55, 65, 75, 85, 95].slice(0, hourlyData.length);
+    const points = hourlyData.map((d, i) => {
+        let y = 80 - ((d.temp - minT) / range) * 50;
+        let timeStr = i === 0 ? "Now" : new Date(d.time).getHours() + ":00";
+        return {x: xVals[i], y, t: Math.round(d.temp), time: timeStr, code: d.weatherCode};
+    });
+    
+    let dStr = `M ${points[0].x},${points[0].y}`;
+    for (let i = 1; i < points.length; i++) {
+        dStr += ` L ${points[i].x},${points[i].y}`;
+    }
+    
+    const circles = points.map(p => `<circle cx="${p.x}" cy="${p.y}" fill="white" r="2"></circle>`).join('');
+    const topLabels = points.map(p => `<span>${p.t}°</span>`).join('');
+    const bottomLabels = points.map(p => `<div class="flex flex-col items-center gap-1">${wmoToIcon(p.code).replace('height="24"','height="16"').replace('width="24"','width="16"')}${p.time}</div>`).join('');
+
+    container.innerHTML = `
+        <div class="flex justify-between items-center mb-6">
+            <h2 class="text-gray-900 font-semibold text-lg">Hourly Forecast</h2>
+        </div>
+        <div class="relative w-full h-[140px]">
+            <svg class="w-full h-[80px] overflow-visible mt-6" preserveAspectRatio="none" viewBox="0 0 100 100">
+                <path d="${dStr}" fill="none" stroke="url(#lineGradient)" stroke-width="2"></path>
+                ${circles}
+                <defs>
+                    <linearGradient id="lineGradient" x1="0" x2="100%" y1="0" y2="0">
+                        <stop offset="0%" stop-color="#3b82f6"></stop>
+                        <stop offset="50%" stop-color="#10b981"></stop>
+                        <stop offset="100%" stop-color="#f59e0b"></stop>
+                    </linearGradient>
+                </defs>
+            </svg>
+            <div class="absolute inset-x-0 top-0 flex justify-between text-xs font-semibold text-gray-900 px-2">${topLabels}</div>
+            <div class="absolute inset-x-0 bottom-0 flex justify-between text-xs text-gray-800 px-1 items-end">${bottomLabels}</div>
+        </div>
+    `;
+}
+
+function renderDaily(dailyData) {
+    const container = document.querySelector('[data-purpose="7-day-forecast"] .flex.flex-col.gap-2\\.5');
+    if (!container) return;
+    container.innerHTML = '';
+    const daysArr = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+    for (let i = 0; i < dailyData.length; i++) {
+        const d = dailyData[i];
+        const date = new Date(d.date);
+        const dayName = i === 0 ? 'Today' : daysArr[date.getDay()];
+        const minT = Math.round(d.min);
+        const maxT = Math.round(d.max);
+        const html = `
+            <div class="glass-card px-4 py-3 flex items-center justify-between">
+                <div class="flex items-center gap-4 w-1/3">
+                    ${wmoToIcon(d.weatherCode).replace('height="24"','height="20"').replace('width="24"','width="20"')}
+                    <span class="font-semibold text-gray-900">${maxT}°</span>
+                </div>
+                <div class="text-sm text-gray-800 w-1/3 text-center">H ${minT}°</div>
+                <div class="text-sm font-medium text-gray-900 w-1/3 text-right">${dayName}</div>
+            </div>
+        `;
+        container.innerHTML += html;
+    }
+}
+
+function updateUI(weather) {
+    if (!weather) return;
+
+    setDynamicBackground(weather);
+
+    const cwContainer = document.querySelector('[data-purpose="current-weather"]');
+    cwContainer.querySelector('h1').innerText = weather.current.name + (weather.current.country ? `, ${weather.current.country}` : '');
+    
+    const desc = weather.current.description;
+    cwContainer.querySelector('p.text-sm.text-gray-800.mt-1').innerText = desc ? desc.charAt(0).toUpperCase() + desc.slice(1) : '';
+
+    cwContainer.querySelector('.text-\\[6rem\\]').innerText = Math.round(weather.current.temp) + '°';
+    cwContainer.querySelector('.text-lg.text-gray-800.mt-2').innerText = 'RealFeel ' + Math.round(weather.current.feelsLike) + '°';
+    
+    // Inject custom sizing to svg parsed from WMO
+    const parsedSvg = wmoToIcon(weather.current.weatherCode);
+    const heroIconHtml = parsedSvg.replace('width="24"', 'width="96"').replace('height="24"', 'height="96"').replace('<svg', '<svg class="w-24 h-24"');
+    const heroIconSlot = cwContainer.querySelector('.w-24.h-24');
+    if(heroIconSlot) heroIconSlot.outerHTML = heroIconHtml;
+
+    const detailsGrid = document.querySelector('[data-purpose="weather-details"] .grid').children;
+    if (detailsGrid[0]) detailsGrid[0].querySelector('.text-lg').innerText = weather.current.humidity + '%';
+    if (detailsGrid[1]) {
+        const speedKmh = Math.round(weather.current.windSpeed * 3.6);
+        detailsGrid[1].querySelector('.text-lg').innerText = `${speedKmh} km/h ${getWindDirection(weather.current.windDir)}`;
+    }
+    
+    if (detailsGrid[3]) detailsGrid[3].querySelector('.text-lg').innerText = (weather.current.pressure || '--') + ' mb';
+    if (detailsGrid[4]) detailsGrid[4].querySelector('.text-lg').innerText = weather.current.visibility ? (weather.current.visibility / 1000).toFixed(1) + ' km' : '--';
+
+    renderHourly(weather.hourly);
+    renderDaily(weather.daily);
+}
+
+// ==== Controller Wiring ====
+
+async function executeSearch(query) {
+    toggleLoading(true);
+    const searchError = document.getElementById('search-error');
+    if (searchError) searchError.classList.add('hidden');
+    
+    try {
+        const weather = await fetchFullWeatherByCity(query);
+        saveRecentLocation(weather.current.name);
+        updateUI(weather);
+        if(searchInput) { searchInput.value = ''; searchInput.blur(); }
+    } catch (err) {
+        if (searchError) {
+            searchError.classList.remove('hidden');
+            setTimeout(() => searchError.classList.add('hidden'), 3500);
+        }
+    } finally {
+        toggleLoading(false);
+    }
+}
+
+if (searchInput) {
+    const debouncedSearch = debounce(() => {
+        const val = searchInput.value.trim();
+        if (val) executeSearch(val);
+    }, 600); // 600 ms typing delay
+    
+    searchInput.addEventListener('input', () => {
+         // Auto-fire after user stops typing
+         if(searchInput.value.trim().length > 2) {
+             debouncedSearch();
+         }
+    });
+
+    searchInput.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') {
+             e.preventDefault();
+             clearTimeout(debouncedSearch); // cancel debounce if forced Enter
+             const val = searchInput.value.trim();
+             if (val) executeSearch(val);
+        }
+    });
+}
+
+const searchBtnDOM = document.getElementById('search-btn');
+if (searchBtnDOM) {
+    searchBtnDOM.addEventListener('click', () => {
+         const val = searchInput.value.trim();
+         if (val) executeSearch(val);
+    });
+}
+
+const autoBtn = document.querySelector('header button');
+if (autoBtn) {
+    autoBtn.addEventListener('click', async () => {
+        toggleLoading(true);
+        try {
+            const weather = await initLocalWeather();
+            saveRecentLocation(weather.current.name);
+            updateUI(weather);
+        } catch (err) {
+            alert('Could not pull geocoordinates.');
+        } finally {
+            toggleLoading(false);
+        }
+    });
+}
+
+// Recent Locations Dropdown Binding
+const recentBtn = document.getElementById('recent-btn');
+const recentDropdown = document.getElementById('recent-dropdown');
+if (recentBtn && recentDropdown) {
+    recentBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        recentDropdown.classList.toggle('hidden');
+    });
+    document.addEventListener('click', (e) => {
+        if (!recentDropdown.contains(e.target) && e.target !== recentBtn) {
+            recentDropdown.classList.add('hidden');
+        }
+    });
+}
+
+// Initial Boot Pipeline
+window.addEventListener('load', async () => {
+    renderRecentLocations();
+    toggleLoading(true);
+    try {
+        const weather = await initLocalWeather();
+        saveRecentLocation(weather.current.name);
+        updateUI(weather);
+    } catch (e) {
+        try {
+            const lastLoc = recentLocations[0] || 'Chandigarh';
+            const weather = await fetchFullWeatherByCity(lastLoc);
+            updateUI(weather);
+        } catch (err) {}
+    } finally {
+        toggleLoading(false);
+    }
+});
+</script>
+</body></html>
