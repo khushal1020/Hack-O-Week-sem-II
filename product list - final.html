@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Inshop</title>
+
+<style>
+
+/* Google Font */
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap');
+
+/* Reset */
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:'Poppins', sans-serif;
+}
+
+body{
+    background:#e0eaf0;
+}
+
+/* ---------- NAVBAR ---------- */
+
+.navbar{
+    background:#766ae1;
+    color:rgb(221, 218, 245);
+    padding:15px 40px;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    position:sticky;
+    top:0;
+    z-index:1000;
+}
+
+.logo{
+    font-size:24px;
+    font-weight:600;
+    color:#d5def6;
+}
+
+.search{
+    width:45%;
+}
+
+.search input{
+    width:100%;
+    padding:10px;
+    border:none;
+    border-radius:5px;
+    outline:none;
+}
+
+.nav-links{
+    display:flex;
+    gap:20px;
+    font-size:14px;
+}
+
+/* ---------- CATEGORY BAR ---------- */
+
+.categories{
+    background:white;
+    padding:12px 40px;
+    display:flex;
+    gap:25px;
+    box-shadow:0 2px 5px rgba(0,0,0,0.08);
+}
+
+.categories span{
+    cursor:pointer;
+    font-size:14px;
+    color:#333;
+}
+
+.categories span:hover{
+    color:#ff9900;
+}
+
+/* ---------- PRODUCT SECTION ---------- */
+
+.container{
+    padding:40px;
+}
+
+.products{
+    display:grid;
+    grid-template-columns:repeat(auto-fit, minmax(250px,1fr));
+    gap:30px;
+}
+
+/* ---------- PRODUCT CARD ---------- */
+
+.card{
+    background:white;
+    border-radius:12px;
+    padding:20px;
+    transition:0.3s;
+    position:relative;
+    box-shadow:0 4px 15px rgba(0,0,0,0.05);
+}
+
+.card:hover{
+    transform:translateY(-6px);
+    box-shadow:0 10px 25px rgba(0,0,0,0.15);
+}
+
+/* Discount badge */
+.badge{
+    position:absolute;
+    top:15px;
+    left:15px;
+    background:#e53935;
+    color:white;
+    font-size:12px;
+    padding:5px 8px;
+    border-radius:5px;
+}
+
+.card img{
+    width:100%;
+    height:200px;
+    object-fit:contain;
+}
+
+/* Product title */
+.card h3{
+    font-size:16px;
+    margin:15px 0 5px;
+    color:#222;
+}
+
+/* Rating */
+.rating{
+    color:#ffa41c;
+    font-size:14px;
+}
+
+/* Price */
+.price{
+    margin:8px 0;
+}
+
+.new{
+    font-size:20px;
+    font-weight:600;
+    color:#B12704;
+}
+
+.old{
+    text-decoration:line-through;
+    color:gray;
+    margin-left:8px;
+    font-size:14px;
+}
+
+/* Button */
+.btn{
+    width:100%;
+    padding:10px;
+    border:none;
+    border-radius:8px;
+    background:#ffd814;
+    font-weight:500;
+    cursor:pointer;
+    transition:0.2s;
+}
+
+.btn:hover{
+    background:#f7ca00;
+}
+
+/* ---------- RESPONSIVE ---------- */
+
+@media(max-width:768px){
+    .search{
+        display:none;
+    }
+}
+
+</style>
+</head>
+
+<body>
+
+<!-- NAVBAR -->
+<div class="navbar">
+    <div class="logo">ShopEasy</div>
+
+    <div class="search">
+        <input type="text" placeholder="Search for products, brands and more">
+    </div>
+
+    <div class="nav-links">
+        <span>Account</span>
+        <span>Orders</span>
+        <span>Cart 🛒</span>
+    </div>
+</div>
+
+<!-- CATEGORY BAR -->
+<div class="categories">
+    <span>Electronics</span>
+    <span>Fashion</span>
+    <span>Mobiles</span>
+    <span>Home</span>
+    <span>Books</span>
+    <span>Appliances</span>
+</div>
+
+<!-- PRODUCTS -->
+<div class="container">
+<div class="products">
+
+<div class="card">
+    <div class="badge">20% OFF</div>
+    <img src="https://m.media-amazon.com/images/I/61CGHv6kmWL._SL1500_.jpg">
+    <h3>Wireless Noise Cancelling Headphones</h3>
+</div>
+
+<div class="card">
+    <div class="badge">30% OFF</div>
+    <img src="https://m.media-amazon.com/images/I/61IMRs+o0iL._SL1500_.jpg">
+    <h3>Smart Fitness Watch</h3>
+</div>
+
+<div class="card">
+    <div class="badge">15% OFF</div>
+    <img src="https://m.media-amazon.com/images/I/81uJyMRONOL.jpg">
+    <h3>Portable Bluetooth Speaker</h3>
+</div>
+
+<div class="card">
+    <div class="badge">25% OFF</div>
+    <img src="https://m.media-amazon.com/images/I/61utX8kBDlL._UL1500_.jpg">
+    <h3>Men's Running Shoes</h3>
+</div>
+
+<div class="card">
+    <div class="badge">10% OFF</div>
+    <img src="https://images.puma.com/image/upload/f_auto,q_auto,b_rgb:fafafa,w_750,h_750/global/092883/01/fnd/IND/fmt/png/PUMA-Travel-V1-Spacious-Expandable-Backpack">
+    <h3>Travel Backpack</h3>
+</div>
+
+<div class="card">
+    <div class="badge">10% OFF</div>
+    <img src="https://m.media-amazon.com/images/I/71c8kzJk5xL._SL1500_.jpg">
+    <h3>Badminton</h3>
+</div>
+
+<div class="card">
+    <div class="badge">10% OFF</div>
+    <img src="https://m.media-amazon.com/images/I/61C7gD2vRXL._UL1500_.jpg">
+    <h3>Shirt</h3>
+</div>
+
+<div class="card">
+    <div class="badge">10% OFF</div>
+    <img src="https://m.media-amazon.com/images/I/71zW6pYkZyL._UL1500_.jpg">
+    <h3>Jeans</h3>
+</div>
+
+<div class="card">
+    <div class="badge">10% OFF</div>
+    <img src="https://m.media-amazon.com/images/I/61lZ3GxkT0L._SL1500_.jpg">
+    <h3>Bodywash</h3>
+</div>
+
+<div class="card">
+    <div class="badge">10% OFF</div>
+    <img src="https://m.media-amazon.com/images/I/61y3U2j5LxL._SL1500_.jpg">
+    <h3>Facewash</h3>
+</div>
+
+</div>
+</div>
+
+</body>
+</html>
