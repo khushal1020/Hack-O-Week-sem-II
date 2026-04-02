@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>C Quiz Advanced</title>
+
+<style>
+body{
+    font-family: Arial;
+    background:#eef2f7;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    height:100vh;
+}
+
+.container{
+    background:white;
+    padding:25px;
+    width:420px;
+    border-radius:10px;
+    box-shadow:0 5px 20px rgba(0,0,0,0.1);
+}
+
+h2{text-align:center;}
+
+button{
+    width:100%;
+    padding:10px;
+    margin-top:15px;
+    border:none;
+    background:#4CAF50;
+    color:white;
+    border-radius:5px;
+    cursor:pointer;
+}
+
+.question{margin:15px 0;}
+.hidden{display:none;}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+<!-- START SCREEN -->
+<div id="startScreen">
+    <h2>Start C Quiz</h2>
+    <input type="text" id="username" placeholder="Enter your name" style="width:100%;padding:10px;">
+    <button onclick="startQuiz()">Start Quiz</button>
+</div>
+
+<!-- QUIZ -->
+<div id="quizScreen" class="hidden">
+    <h2 id="userTitle"></h2>
+    <form id="quizForm"></form>
+    <button onclick="submitQuiz()">Submit</button>
+    <div id="result"></div>
+</div>
+
+</div>
+
+<script>
+
+// 20 Questions Bank
+const questionBank = [
+{q:"Who developed C?",o:["Dennis Ritchie","Gosling","Bjarne","Guido"],a:0},
+{q:"C language year?",o:["1972","1980","1995","2000"],a:0},
+{q:"Extension of C?",o:[".c",".cpp",".java",".py"],a:0},
+{q:"Entry function?",o:["main()","start()","run()","init()"],a:0},
+{q:"Comment symbol?",o:["//","##","**","--"],a:0},
+{q:"Keyword for int?",o:["int","num","var","let"],a:0},
+{q:"Header for printf?",o:["stdio.h","math.h","string.h","stdlib.h"],a:0},
+{q:"Loop type?",o:["for","repeat","each","loop"],a:0},
+{q:"Array index starts?",o:["0","1","-1","2"],a:0},
+{q:"Pointer symbol?",o:["*","&","#","@"],a:0},
+{q:"Address operator?",o:["&","*","#","@"],a:0},
+{q:"Function return?",o:["return","give","send","back"],a:0},
+{q:"String ends with?",o:["\\0","\\n","\\t","."],a:0},
+{q:"scanf used for?",o:["input","output","loop","logic"],a:0},
+{q:"printf used for?",o:["output","input","loop","logic"],a:0},
+{q:"Break does?",o:["exit loop","continue","restart","pause"],a:0},
+{q:"Continue does?",o:["skip","stop","exit","restart"],a:0},
+{q:"sizeof returns?",o:["size","value","address","type"],a:0},
+{q:"C is?",o:["procedural","oop","functional","script"],a:0},
+{q:"Compiler converts?",o:["code to machine","machine to code","binary to text","text to binary"],a:0}
+];
+
+let selectedQuestions = [];
+
+// Shuffle function
+function shuffle(arr){
+    return arr.sort(()=>Math.random()-0.5);
+}
+
+// Start Quiz
+function startQuiz(){
+    let name = document.getElementById("username").value;
+    if(name===""){
+        alert("Enter name");
+        return;
+    }
+
+    document.getElementById("startScreen").classList.add("hidden");
+    document.getElementById("quizScreen").classList.remove("hidden");
+    document.getElementById("userTitle").innerText = "Player: " + name;
+
+    selectedQuestions = shuffle([...questionBank]).slice(0,6);
+    loadQuestions();
+}
+
+// Load Questions
+function loadQuestions(){
+    let form = document.getElementById("quizForm");
+    form.innerHTML = "";
+
+    selectedQuestions.forEach((q,i)=>{
+        let options = shuffle([...q.o]);
+
+        let div = document.createElement("div");
+        div.classList.add("question");
+
+        let html = `<p>${i+1}. ${q.q}</p>`;
+        options.forEach(opt=>{
+            html += `<input type="radio" name="q${i}" value="${opt}"> ${opt}<br>`;
+        });
+
+        div.innerHTML = html;
+        form.appendChild(div);
+
+        q.shuffledOptions = options;
+    });
+}
+
+// Submit
+function submitQuiz(){
+    let score = 0;
+
+    selectedQuestions.forEach((q,i)=>{
+        let selected = document.querySelector(`input[name="q${i}"]:checked`);
+        if(selected){
+            let correct = q.o[q.a];
+            if(selected.value === correct){
+                score++;
+            }
+        }
+    });
+
+    document.getElementById("result").innerHTML =
+        "<h3>Score: "+score+"/6</h3>";
+}
+
+</script>
+
+</body>
+</html>
