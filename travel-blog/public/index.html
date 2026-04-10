@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Travel Blog</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<nav class="navbar">
+    <div class="logo">TravelBlog</div>
+    <div class="nav-right">
+        <a href="/" class="nav-link">Home</a>
+        <a href="/admin.html" class="nav-link">Add Blog</a>
+        <a href="/login.html" id="auth-link" class="nav-link">Login</a>
+    </div>
+</nav>
+<br><br>
+<div class="controls">
+    <input type="text" id="search-input" placeholder="Search by title...">
+    <select id="country-filter">
+        <option value="">All Countries</option>
+    </select>
+</div>
+<br>
+    <div id="blog-container"></div>
+
+    <script src="script.js"></script>
+    <div id="edit-modal" class="modal hidden">
+    <div class="modal-content">
+        <h3>Edit Blog</h3>
+        <input type="text" id="edit-title" placeholder="Title">
+        <input type="text" id="edit-country" placeholder="Country">
+        <input type="text" id="edit-image" placeholder="Image URL">
+        <textarea id="edit-description" placeholder="Description"></textarea>
+
+        <div class="modal-buttons">
+            <button id="save-edit">Save</button>
+            <button id="cancel-edit">Cancel</button>
+        </div>
+    </div>
+</div>
+</body>
+</html>

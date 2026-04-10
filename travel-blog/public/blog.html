@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Blog Detail</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <div id="blog-detail"></div>
+
+    <script>
+        async function loadBlogDetail() {
+            const params = new URLSearchParams(window.location.search);
+            const id = params.get("id");
+
+            const response = await fetch(`/blogs/${id}`);
+            const blog = await response.json();
+
+            const container = document.getElementById("blog-detail");
+
+            container.innerHTML = `
+                <h1>${blog.title}</h1>
+                <h3>${blog.country}</h3>
+                <img src="${blog.image}" width="500">
+                <p>${blog.description}</p>
+                <p><strong>Date:</strong> ${blog.date}</p>
+                <br>
+                <a href="/">⬅ Back to Home</a>
+            `;
+        }
+
+        loadBlogDetail();
+    </script>
+
+</body>
+</html>

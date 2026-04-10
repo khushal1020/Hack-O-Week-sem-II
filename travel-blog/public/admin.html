@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Admin - Add Blog</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <h1>Add New Blog</h1>
+
+    <form id="blog-form">
+        <input type="text" id="title" placeholder="Title" required><br><br>
+        <input type="text" id="country" placeholder="Country" required><br><br>
+        <input type="text" id="image" placeholder="Image URL" required><br><br>
+        <input type="date" id="date" required><br><br>
+        <textarea id="description" placeholder="Description" required></textarea><br><br>
+        <button type="submit">Add Blog</button>
+    </form>
+
+    <br>
+    <a href="/">⬅ Back to Home</a>
+
+    <script>
+        const form = document.getElementById("blog-form");
+
+        form.addEventListener("submit", async (e) => {
+            e.preventDefault();
+
+            const newBlog = {
+                title: document.getElementById("title").value,
+                country: document.getElementById("country").value,
+                image: document.getElementById("image").value,
+                date: document.getElementById("date").value,
+                description: document.getElementById("description").value
+            };
+
+            await fetch("/blogs", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(newBlog)
+            });
+
+            alert("Blog Added Successfully");
+
+            window.location.href = "/";
+        });
+    </script>
+
+</body>
+</html>
